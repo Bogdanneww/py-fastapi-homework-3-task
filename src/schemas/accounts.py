@@ -12,7 +12,6 @@ class UserRegistrationRequestSchema(UserBaseSchema):
 
 class UserRegistrationResponseSchema(UserBaseSchema):
     id: int
-    password: str = Field(alias="_hashed_password")
 
     class Config:
         from_attributes = True

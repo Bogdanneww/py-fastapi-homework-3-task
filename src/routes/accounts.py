@@ -60,7 +60,7 @@ async def activate(activation_data: UserActivationRequestSchema, db: AsyncSessio
     user = await get_user_by_email(db, activation_data.email)
     token = await get_activate_token(db, activation_data.token)
 
-    if not token or token.expires_at < datetime.now():
+    if not token or token.expires_at < datetime.now(timezone.utc):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Invalid or expired activation token."
@@ -103,7 +103,7 @@ async def password_reset_complete(reset_data: PasswordResetCompleteRequestSchema
     if reset_data.token != db_token.token :
         await delete_token_with_exception(db, db_token)
 
-    if db_token.expires_at < datetime.now():
+    if db_token.expires_at < datetime.now(timezone.utc):
         await delete_token_with_exception(db, db_token)
 
     await update_password(db=db, user=user, password=reset_data.password)
